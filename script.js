@@ -118,13 +118,43 @@ function placeOrder() {
   message += `✅ Total: ₹${total}%0A%0A`;
   message += `💳 Payment Mode: ${payment}%0A%0A`;
   message += `🙏 Please confirm my order.`;
-
+let orderSummary = `Order for ${name}, Total ₹${total}`;
+saveOrderHistory(orderSummary);
   const url = `https://wa.me/${whatsappNumber}?text=${message}`;
   window.open(url, "_blank");
 }
+function saveOrderHistory(orderText) {
+  let history = JSON.parse(localStorage.getItem("fruitOrders")) || [];
+  history.unshift({ date: new Date().toLocaleString(), order: orderText });
 
+  localStorage.setItem("fruitOrders", JSON.stringify(history));
+  loadOrderHistory();
+}
+
+function loadOrderHistory() {
+  let history = JSON.parse(localStorage.getItem("fruitOrders")) || [];
+  const div = document.getElementById("orderHistory");
+
+  if (!div) return;
+
+  if (history.length === 0) {
+    div.innerHTML = "<p>No orders yet.</p>";
+    return;
+  }
+
+  div.innerHTML = "";
+
+  history.forEach(h => {
+    div.innerHTML += `
+      <div class="history-item">
+        <p><b>${h.date}</b></p>
+        <p>${h.order}</p>
+      </div>
+    `;
+  });
+}
 loadFruits();
-
+loadOrderHistory();
 document.getElementById("paymentMode").addEventListener("change", function () {
   const upiBox = document.getElementById("upiBox");
 
