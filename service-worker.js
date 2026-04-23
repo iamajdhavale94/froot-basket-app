@@ -7,7 +7,7 @@ const filesToCache = [
   "/script.js",
   "/fruits.json",
   "/manifest.json",
-  "/assets/logo.png",
+  "/assets/logo.jpg",
   "/assets/bg.jpg"
 ];
 
