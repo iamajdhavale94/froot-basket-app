@@ -1,0 +1,30 @@
+[
+  {
+    "name": "Apple",
+    "price": 250,
+    "unit": "kg",
+    "emoji": "🍎",
+    "available": true
+  },
+  {
+    "name": "Orange",
+    "price": 150,
+    "unit": "kg",
+    "emoji": "🍊",
+    "available": true
+  },
+  {
+    "name": "Banana",
+    "price": 60,
+    "unit": "dozen",
+    "emoji": "🍌",
+    "available": true
+  },
+  {
+    "name": "Grapes",
+    "price": 120,
+    "unit": "kg",
+    "emoji": "🍇",
+    "available": true
+  }
+]
