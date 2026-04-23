@@ -3,6 +3,7 @@
     "name": "Apple",
     "price": 250,
     "unit": "kg",
+    "step": 0.5,
     "emoji": "🍎",
     "available": true
   },
@@ -10,6 +11,7 @@
     "name": "Orange",
     "price": 150,
     "unit": "kg",
+    "step": 0.5,
     "emoji": "🍊",
     "available": true
   },
@@ -17,14 +19,32 @@
     "name": "Banana",
     "price": 60,
     "unit": "dozen",
+    "step": 1,
     "emoji": "🍌",
     "available": true
   },
   {
-    "name": "Grapes",
-    "price": 120,
-    "unit": "kg",
-    "emoji": "🍇",
+    "name": "Kiwi Pack (3 pcs)",
+    "price": 100,
+    "unit": "pack",
+    "step": 1,
+    "emoji": "🥝",
+    "available": true
+  },
+  {
+    "name": "Avocado",
+    "price": 100,
+    "unit": "piece",
+    "step": 1,
+    "emoji": "🥑",
+    "available": true
+  },
+  {
+    "name": "Dragon Fruit",
+    "price": 50,
+    "unit": "piece",
+    "step": 1,
+    "emoji": "🐉",
     "available": true
   }
 ]
