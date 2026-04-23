@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="mr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Fruit Basket App</title>
+
+  <link rel="stylesheet" href="style.css"/>
+  <link rel="manifest" href="manifest.json"/>
+
+  <meta name="theme-color" content="#ffcc00" />
+</head>
+<body>
+
+  <div class="overlay"></div>
+
+  <header class="header">
+    <h1>🍎 Fruit Basket</h1>
+    <p>Fresh Fruits Delivery | 10 km मध्ये फक्त ₹20 डिलिव्हरी</p>
+  </header>
+
+  <main class="container">
+
+    <section class="stock-section">
+      <h2>आजचा ताजा स्टॉक</h2>
+      <div id="fruitGrid" class="fruit-grid"></div>
+    </section>
+
+    <section class="cart-section">
+      <h2>🛒 Cart</h2>
+      <div id="cartItems"></div>
+
+      <div class="summary">
+        <p>Subtotal: ₹<span id="subtotal">0</span></p>
+        <p>Delivery Charge (10 km): ₹<span id="delivery">20</span></p>
+        <h3>Total: ₹<span id="total">0</span></h3>
+      </div>
+    </section>
+
+    <section class="checkout-section">
+      <h2>📦 Checkout</h2>
+
+      <input type="text" id="custName" placeholder="Your Name" required>
+      <input type="text" id="custMobile" placeholder="Mobile Number" required>
+      <textarea id="custAddress" placeholder="Delivery Address" required></textarea>
+
+      <label>Payment Option:</label>
+      <select id="paymentMode">
+        <option value="COD">Cash on Delivery (COD)</option>
+        <option value="UPI">UPI Payment</option>
+      </select>
+
+      <button class="order-btn" onclick="placeOrder()">📲 Place Order on WhatsApp</button>
+
+      <p class="note">
+        UPI Payment केल्यास screenshot WhatsApp वर पाठवा.
+      </p>
+    </section>
+
+  </main>
+
+  <footer class="footer">
+    <p>© 2026 Fruit Basket | Order on WhatsApp: 7798933902</p>
+  </footer>
+
+  <script src="script.js"></script>
+</body>
+</html>
