@@ -178,7 +178,20 @@ h2 {
   text-align: center;
   background: rgba(0,0,0,0.55);
 }
+.upi-box {
+  margin-top: 15px;
+  padding: 15px;
+  border-radius: 12px;
+  background: rgba(0,0,0,0.45);
+  text-align: center;
+}
 
+.upi-qr {
+  width: 200px;
+  margin-top: 10px;
+  border-radius: 10px;
+  border: 2px solid #ffcc00;
+}
 @media(max-width: 900px) {
   .fruit-grid {
     grid-template-columns: repeat(2, 1fr);
