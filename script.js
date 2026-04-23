@@ -199,3 +199,19 @@ function placeOrder() {
 // -------------------------
 loadFruits();
 loadOrderHistory();
+function initUPIListener() {
+  const paymentDropdown = document.getElementById("paymentMode");
+  const upiBox = document.getElementById("upiBox");
+
+  if (!paymentDropdown || !upiBox) return;
+
+  paymentDropdown.addEventListener("change", function () {
+    if (this.value === "UPI") {
+      upiBox.style.display = "block";
+    } else {
+      upiBox.style.display = "none";
+    }
+  });
+}
+
+window.addEventListener("load", initUPIListener);
