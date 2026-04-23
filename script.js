@@ -1,8 +1,12 @@
 let fruits = [];
 let cart = {};
-const deliveryCharge = 20;
+
+const deliveryCharge = 45;
 const whatsappNumber = "917798933902";
 
+// -------------------------
+// Load Fruits JSON
+// -------------------------
 async function loadFruits() {
   const res = await fetch("fruits.json");
   fruits = await res.json();
@@ -26,28 +30,33 @@ function renderFruits() {
   });
 }
 
+// -------------------------
+// Cart Functions
+// -------------------------
 function addToCart(index) {
   const fruit = fruits[index];
 
   if (!cart[fruit.name]) {
-    cart[fruit.name] = { ...fruit, qty: 1 };
+    cart[fruit.name] = { ...fruit, qty: fruit.step };
   } else {
-    cart[fruit.name].qty += 1;
+    cart[fruit.name].qty += fruit.step;
   }
 
   renderCart();
 }
 
 function increaseQty(name) {
-  cart[name].qty += 1;
+  cart[name].qty += cart[name].step;
   renderCart();
 }
 
 function decreaseQty(name) {
-  cart[name].qty -= 1;
+  cart[name].qty -= cart[name].step;
+
   if (cart[name].qty <= 0) {
     delete cart[name];
   }
+
   renderCart();
 }
 
@@ -59,13 +68,14 @@ function renderCart() {
 
   Object.keys(cart).forEach(name => {
     const item = cart[name];
-    subtotal += item.price * item.qty;
+    const itemTotal = item.price * item.qty;
+    subtotal += itemTotal;
 
     cartItems.innerHTML += `
       <div class="cart-item">
         <div>
           <span>${item.emoji} ${item.name}</span>
-          <p>₹${item.price} x ${item.qty} = ₹${item.price * item.qty}</p>
+          <p>₹${item.price} x ${item.qty} ${item.unit} = ₹${itemTotal.toFixed(0)}</p>
         </div>
         <div>
           <button class="qty-btn qty-minus" onclick="decreaseQty('${name}')">-</button>
@@ -75,11 +85,55 @@ function renderCart() {
     `;
   });
 
-  document.getElementById("subtotal").innerText = subtotal;
+  document.getElementById("subtotal").innerText = subtotal.toFixed(0);
   document.getElementById("delivery").innerText = subtotal > 0 ? deliveryCharge : 0;
-  document.getElementById("total").innerText = subtotal > 0 ? subtotal + deliveryCharge : 0;
+  document.getElementById("total").innerText =
+    subtotal > 0 ? (subtotal + deliveryCharge).toFixed(0) : 0;
 }
 
+// -------------------------
+// Order History Functions
+// -------------------------
+function saveOrderHistory(orderDetails) {
+  let history = JSON.parse(localStorage.getItem("fruitOrders")) || [];
+  history.unshift(orderDetails);
+
+  localStorage.setItem("fruitOrders", JSON.stringify(history));
+  loadOrderHistory();
+}
+
+function loadOrderHistory() {
+  const div = document.getElementById("orderHistory");
+  if (!div) return;
+
+  let history = JSON.parse(localStorage.getItem("fruitOrders")) || [];
+
+  if (history.length === 0) {
+    div.innerHTML = "<p>No orders yet.</p>";
+    return;
+  }
+
+  div.innerHTML = "";
+
+  history.forEach(h => {
+    div.innerHTML += `
+      <div class="history-item">
+        <p><b>${h.date}</b></p>
+        <p><b>Customer:</b> ${h.name}</p>
+        <p><b>Total (Approx):</b> ₹${h.total}</p>
+      </div>
+    `;
+  });
+}
+
+function clearOrderHistory() {
+  localStorage.removeItem("fruitOrders");
+  loadOrderHistory();
+}
+
+// -------------------------
+// Place Order
+// -------------------------
 function placeOrder() {
   const name = document.getElementById("custName").value.trim();
   const mobile = document.getElementById("custMobile").value.trim();
@@ -96,6 +150,8 @@ function placeOrder() {
     return;
   }
 
+  let subtotal = 0;
+
   let message = `🍎 *Fruit Basket Order* %0A%0A`;
   message += `👤 Name: ${name}%0A`;
   message += `📞 Mobile: ${mobile}%0A`;
@@ -103,64 +159,43 @@ function placeOrder() {
 
   message += `🛒 *Order Items:* %0A`;
 
-  let subtotal = 0;
+  Object.keys(cart).forEach(itemName => {
+    const item = cart[itemName];
+    const itemTotal = item.price * item.qty;
+    subtotal += itemTotal;
 
-  Object.keys(cart).forEach(name => {
-    const item = cart[name];
-    subtotal += item.price * item.qty;
-    message += `➡ ${item.name} (${item.qty} ${item.unit}) - ₹${item.price * item.qty}%0A`;
+    message += `➡ ${item.name} - ${item.qty} ${item.unit} (₹${itemTotal.toFixed(0)})%0A`;
   });
 
   let total = subtotal + deliveryCharge;
 
-  message += `%0A💰 Subtotal: ₹${subtotal}%0A`;
+  message += `%0A💰 Subtotal (Approx): ₹${subtotal.toFixed(0)}%0A`;
   message += `🚚 Delivery Charge: ₹${deliveryCharge}%0A`;
-  message += `✅ Total: ₹${total}%0A%0A`;
+  message += `✅ Total (Approx): ₹${total.toFixed(0)}%0A%0A`;
+
+  message += `⚠ *Note:* फळांचे वजन exact नसल्यामुळे अंतिम बिल कमी/जास्त होऊ शकते.%0A%0A`;
+
   message += `💳 Payment Mode: ${payment}%0A%0A`;
   message += `🙏 Please confirm my order.`;
-let orderSummary = `Order for ${name}, Total ₹${total}`;
-saveOrderHistory(orderSummary);
+
+  // Save order in history
+  saveOrderHistory({
+    date: new Date().toLocaleString(),
+    name: name,
+    total: total.toFixed(0)
+  });
+
+  // Open WhatsApp
   const url = `https://wa.me/${whatsappNumber}?text=${message}`;
   window.open(url, "_blank");
-}
-function saveOrderHistory(orderText) {
-  let history = JSON.parse(localStorage.getItem("fruitOrders")) || [];
-  history.unshift({ date: new Date().toLocaleString(), order: orderText });
 
-  localStorage.setItem("fruitOrders", JSON.stringify(history));
-  loadOrderHistory();
+  // Clear cart after placing order
+  cart = {};
+  renderCart();
 }
 
-function loadOrderHistory() {
-  let history = JSON.parse(localStorage.getItem("fruitOrders")) || [];
-  const div = document.getElementById("orderHistory");
-
-  if (!div) return;
-
-  if (history.length === 0) {
-    div.innerHTML = "<p>No orders yet.</p>";
-    return;
-  }
-
-  div.innerHTML = "";
-
-  history.forEach(h => {
-    div.innerHTML += `
-      <div class="history-item">
-        <p><b>${h.date}</b></p>
-        <p>${h.order}</p>
-      </div>
-    `;
-  });
-}
+// -------------------------
+// Init
+// -------------------------
 loadFruits();
 loadOrderHistory();
-document.getElementById("paymentMode").addEventListener("change", function () {
-  const upiBox = document.getElementById("upiBox");
-
-  if (this.value === "UPI") {
-    upiBox.style.display = "block";
-  } else {
-    upiBox.style.display = "none";
-  }
-});
