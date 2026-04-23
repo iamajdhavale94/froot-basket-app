@@ -124,3 +124,13 @@ function placeOrder() {
 }
 
 loadFruits();
+
+document.getElementById("paymentMode").addEventListener("change", function () {
+  const upiBox = document.getElementById("upiBox");
+
+  if (this.value === "UPI") {
+    upiBox.style.display = "block";
+  } else {
+    upiBox.style.display = "none";
+  }
+});
